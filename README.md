@@ -1,3 +1,12 @@
+# Usage
+
+* install dependencies with `npm install`
+* export your Cookbook+ recipes and move the file into this directory
+* rename it to source.sqlite
+* run `node main.js`
+* your recipes are in `converted.yml`
+* not parsable time stamps or ingredients are listed in `strange.yml`
+
 # mappings
 
 title: name
@@ -8,22 +17,4 @@ course: [ categories ]
 prep time: cook_time
 image data: photo |
 ingredients (JSON): ingredients |
-
-# components
-
-    floor_m + fraction_m + unit_m
-
-1/8
-1/5
-1/4
-1/3
-3/8
-2/5
-1/2
-3/5
-5/8
-2/3
-3/4
-4/5
-7/8
 
