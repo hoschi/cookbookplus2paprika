@@ -7,7 +7,7 @@ is pinned: on_favorites
 course: [ categories ]
 prep time: cook_time
 image data: photo |
-components: ingredients |
+ingredients (JSON): ingredients |
 
 # components
 
