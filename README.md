@@ -7,14 +7,16 @@
 * your recipes are in `converted.yml`
 * not parsable time stamps or ingredients are listed in `strange.yml`
 
+Licence: MIT
+
 # mappings
 
-title: name
-desc: notes |
-recipe url: source
-is pinned: on_favorites
-course: [ categories ]
-prep time: cook_time
-image data: photo |
-ingredients (JSON): ingredients |
+* title: name
+* desc: notes |
+* recipe url: source
+* is pinned: on_favorites
+* course: [ categories ]
+* prep time: cook_time
+* image data: photo |
+* ingredients (JSON): ingredients |
 
