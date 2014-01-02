@@ -22,7 +22,6 @@ stringify = function (obj) {
 };
 
 // get all user recipes
-// TODO remove limit
 db.each("SELECT * FROM staging WHERE member_id=0 LIMIT 11", function(err, row) {
 	var entry, timeMatch, time, timeUnit, ingredients, comsp, ingredientsStrange,
 		timeStrange;
@@ -33,11 +32,9 @@ db.each("SELECT * FROM staging WHERE member_id=0 LIMIT 11", function(err, row) {
 
 	entry = {};
 	entry.name = row.title;
-	//entry.notes = "| " + row.desc;
 	entry.notes = row.desc;
 	entry.source = row.recipe_url;
-	// TODO enable
-	//entry.photo = "!!binary " + row.image_data;
+	entry.photo = row.image_data;
 	entry.categories = [ row.course ];
 
 	entry.on_favorites = false;
