@@ -1,0 +1,12 @@
+{
+  "name": "cookbookplus2paprika",
+  "version": "0.0.0",
+  "main": "main.js",
+  "repository": "",
+  "author": "Stefan Gojan",
+  "license": "MIT",
+  "dependencies": {
+    "sqlite3": "~2.1.19",
+    "js-yaml": "~3.0.1"
+  }
+}
