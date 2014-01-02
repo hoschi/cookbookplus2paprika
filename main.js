@@ -14,9 +14,9 @@ stringify = function (obj) {
 	s = yaml.safeDump(obj);
 
 	// fake multi line strings because this isn't yet in js-yaml
-	s = s.replace(/notes: "([^"]*)"/g, 'notes: |\n  $1');
+	s = s.replace(/notes: "([^"]*)"/g, 'notes: |\n    $1');
 	s = s.replace(/ingredients: "([^"]*)"/g, 'ingredients: |\n  $1');
-	s = s.replace(/\\n/g, '\n  ');
+	s = s.replace(/\\n/g, '\n    ');
 
 	return s;
 };
@@ -45,32 +45,6 @@ db.each("SELECT * FROM staging WHERE member_id=0 LIMIT 11", function(err, row) {
 		entry.on_favorites = true;
 	}
 
-	ingredientsStrange = [];
-	ingredients = JSON.parse(row.ingredients);
-	ingredients = ingredients.components;
-	comps = '';
-	ingredients.forEach(function(item) {
-		item = item.component;
-		comps += '  ';
-		if (item.floor_m &&
-			item.floor_m !== "") {
-			comps += item.floor_m + ' ';
-		}
-
-		if (item.unit_m &&
-			item.unit_m !== "") {
-			comps += item.unit_m + ' ';
-		}
-
-		comps += item.ingredient;
-		comps += "\n";
-
-		if (item.fraction_m !== "") {
-			ingredientsStrange.push(item.ingredient);
-		}
-	});
-	entry.ingredients = comps;
-
 	timeMatch = row.prep_time.match(/^(\d+|\d+,\d+)\s*(\w+)$/);
 	if (timeMatch) {
 		time = timeMatch[1];
@@ -91,6 +65,31 @@ db.each("SELECT * FROM staging WHERE member_id=0 LIMIT 11", function(err, row) {
 		timeStrange = row.prep_time;
 	}
 
+	ingredientsStrange = [];
+	ingredients = JSON.parse(row.ingredients);
+	ingredients = ingredients.components;
+	comps = '  ';
+	ingredients.forEach(function(item) {
+		item = item.component;
+		if (item.floor_m &&
+			item.floor_m !== "") {
+			comps += item.floor_m + ' ';
+		}
+
+		if (item.unit_m &&
+			item.unit_m !== "") {
+			comps += item.unit_m + ' ';
+		}
+
+		comps += item.ingredient;
+		comps += "\n";
+
+		if (item.fraction_m !== "") {
+			ingredientsStrange.push(item.ingredient);
+		}
+	});
+	entry.ingredients = comps;
+
 	if (timeStrange || ingredientsStrange.length > 0) {
 		strangItem = {
 			title:row.title
@@ -108,10 +107,10 @@ db.each("SELECT * FROM staging WHERE member_id=0 LIMIT 11", function(err, row) {
 	}
 
 	recipesNormal.push(entry);
-	console.log(stringify(entry));
+	//console.log(stringify(entry));
 }, function () {
-	fs.writeFile("./strange.yaml", stringify(recipesStrange));
-	fs.writeFile("./converted.yaml", stringify(recipesNormal));
+	fs.writeFile("./strange.yml", stringify(recipesStrange));
+	fs.writeFile("./converted.yml", stringify(recipesNormal));
 });
 
 db.close();
