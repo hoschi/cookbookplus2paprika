@@ -22,7 +22,7 @@ stringify = function (obj) {
 };
 
 // get all user recipes
-db.each("SELECT * FROM staging WHERE member_id=0 LIMIT 11", function(err, row) {
+db.each("SELECT * FROM staging WHERE member_id=0", function(err, row) {
 	var entry, timeMatch, time, timeUnit, ingredients, comsp, ingredientsStrange,
 		timeStrange;
 
@@ -63,29 +63,31 @@ db.each("SELECT * FROM staging WHERE member_id=0 LIMIT 11", function(err, row) {
 	}
 
 	ingredientsStrange = [];
-	ingredients = JSON.parse(row.ingredients);
-	ingredients = ingredients.components;
-	comps = '  ';
-	ingredients.forEach(function(item) {
-		item = item.component;
-		if (item.floor_m &&
-			item.floor_m !== "") {
-			comps += item.floor_m + ' ';
-		}
+	if (row.ingredients) {
+		ingredients = JSON.parse(row.ingredients);
+		ingredients = ingredients.components;
+		comps = '  ';
+		ingredients.forEach(function(item) {
+			item = item.component;
+			if (item.floor_m &&
+				item.floor_m !== "") {
+				comps += item.floor_m + ' ';
+			}
 
-		if (item.unit_m &&
-			item.unit_m !== "") {
-			comps += item.unit_m + ' ';
-		}
+			if (item.unit_m &&
+				item.unit_m !== "") {
+				comps += item.unit_m + ' ';
+			}
 
-		comps += item.ingredient;
-		comps += "\n";
+			comps += item.ingredient;
+			comps += "\n";
 
-		if (item.fraction_m !== "") {
-			ingredientsStrange.push(item.ingredient);
-		}
-	});
-	entry.ingredients = comps;
+			if (item.fraction_m !== "") {
+				ingredientsStrange.push(item.ingredient);
+			}
+		});
+		entry.ingredients = comps;
+	}
 
 	if (timeStrange || ingredientsStrange.length > 0) {
 		strangItem = {
