@@ -15,11 +15,49 @@ stringify = function (obj) {
 
 	// fake multi line strings because this isn't yet in js-yaml
 	s = s.replace(/notes: "([^"]*)"/g, 'notes: |\n    $1');
+	s = s.replace(/directions: "([^"]*)"/g, 'directions: |\n    $1');
 	s = s.replace(/ingredients: "([^"]*)"/g, 'ingredients: |\n  $1');
 	s = s.replace(/\\n/g, '\n    ');
 
 	return s;
 };
+
+addStepToRecipe = function (recipe) {
+	return function(err, row) {
+		recipe.directions += row.title;
+		recipe.directions += "\n\n";
+	};
+};
+
+finished = 0;
+collectSteps = function () {
+	var i, recipe;
+
+	for (i = 0; i < recipesNormal.length; i++) {
+		recipe = recipesNormal[i];
+		recipe.directions = "";
+
+		db.each("SELECT * FROM s_stepstep WHERE parent_id=" + recipe.id + " ORDER BY sort_order ASC", addStepToRecipe(recipe), handleFinishedRecipe(recipe));
+	}
+};
+
+handleFinishedRecipe = function (recipe) {
+	return function () {
+		finished++;
+
+		delete recipe.id;
+
+		if (finished >= recipesNormal.length) {
+			writeFiles();
+		}
+	};
+};
+
+writeFiles = function () {
+	fs.writeFile("./strange.yml", stringify(recipesStrange));
+	fs.writeFile("./converted.yml", stringify(recipesNormal));
+};
+
 
 // get all user recipes
 db.each("SELECT * FROM staging WHERE member_id=0", function(err, row) {
@@ -31,6 +69,7 @@ db.each("SELECT * FROM staging WHERE member_id=0", function(err, row) {
 	}
 
 	entry = {};
+	entry.id = row.staging_id;
 	entry.name = row.title;
 	entry.notes = row.desc;
 	entry.source = row.recipe_url;
@@ -107,9 +146,6 @@ db.each("SELECT * FROM staging WHERE member_id=0", function(err, row) {
 
 	recipesNormal.push(entry);
 	//console.log(stringify(entry));
-}, function () {
-	fs.writeFile("./strange.yml", stringify(recipesStrange));
-	fs.writeFile("./converted.yml", stringify(recipesNormal));
-});
+}, collectSteps);
 
 db.close();
