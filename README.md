@@ -20,3 +20,7 @@ Licence: MIT
 * image data: photo |
 * ingredients (JSON): ingredients |
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/hoschi/cookbookplus2paprika/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
